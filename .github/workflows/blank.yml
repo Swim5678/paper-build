@@ -17,11 +17,11 @@ jobs:
       run: |
         git clone --branch dev/1.21.7 --depth 1 https://github.com/PaperMC/Paper.git
 
-    - name: Set up JDK 17
+    - name: Set up JDK 21
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
-        java-version: 17
+        java-version: 21
 
     - name: Apply patches
       run: |
