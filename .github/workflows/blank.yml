@@ -1,0 +1,40 @@
+name: Build Paper (from upstream)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 14 * * *' # 每天台北時間22:00（UTC+8）自動執行
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout (setup workspace)
+      uses: actions/checkout@v4
+
+    - name: Clone PaperMC dev/1.21.7
+      run: |
+        git clone --branch dev/1.21.7 --depth 1 https://github.com/PaperMC/Paper.git
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: 17
+
+    - name: Apply patches
+      run: |
+        cd Paper
+        ./gradlew applyPatches
+
+    - name: Build Paper
+      run: |
+        cd Paper
+        ./gradlew build
+
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: paper-jar
+        path: Paper/Paper-Server/build/libs/*.jar
